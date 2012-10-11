@@ -3,6 +3,7 @@ package org.gunn.gemini.console;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.blueprint.container.BlueprintContainer;
 import org.osgi.service.blueprint.container.NoSuchComponentException;
 
@@ -31,9 +32,6 @@ public abstract class AbstractBlueprintActivator implements BundleActivator  {
 		}
 	}
 	
-	
-	
-	
 	private BlueprintContainer[] getBlueprintContainer() throws Exception{
 		if( getbluePrintContainerTracker().getService() != null ){
 			
@@ -54,7 +52,7 @@ public abstract class AbstractBlueprintActivator implements BundleActivator  {
 	
 	@Override
 	public void start(BundleContext context) throws Exception {
-		this.instance = this;
+		instance = this;
 		this.context = context;
 		
 		//here i will build a service tracker to access blueprintContainer
@@ -69,17 +67,30 @@ public abstract class AbstractBlueprintActivator implements BundleActivator  {
 	}
 	
 	public Object getBean(String id) throws Exception{
+		Object bean = null;
 		NoSuchComponentException notFoundException = null;
 		for(BlueprintContainer container : getBlueprintContainer()){
 			try{
-				return container.getComponentInstance(id);
+				bean = container.getComponentInstance(id);
+				break;
 			}catch(NoSuchComponentException e){
 				notFoundException = e;
 			}
 		}
-		
+		if( bean != null){
+			return getRawBean(bean);
+		}
 		throw notFoundException;
 	}
 	
+<<<<<<< HEAD
+=======
+	private Object getRawBean(Object bean){
+	    if( bean instanceof ServiceRegistration){
+	    		return getDefault().getContext().getService(((ServiceRegistration)bean).getReference() );
+	    }
+		return bean;
+	}
+>>>>>>> 24564b312d9bded7cbde581dc821c12a2a5a2800
 	
 }

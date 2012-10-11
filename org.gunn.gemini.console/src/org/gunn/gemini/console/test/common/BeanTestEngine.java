@@ -14,17 +14,33 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils; 
+<<<<<<< HEAD
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.gunn.gemini.console.Activator;
 import org.gunn.gemini.console.classloader.GunnScriptClassLoader;
 import org.osgi.framework.Bundle;
 
 import org.gunn.gemini.console.api.engine.GeminiConsoleGroovyEngine;
+=======
+import org.codehaus.groovy.jsr223.GroovyScriptEngineImpl;
+import org.gunn.gemini.console.Activator;
+import org.gunn.gemini.console.classloader.GunnScriptClassLoader;
+import org.osgi.framework.Bundle;
+>>>>>>> 24564b312d9bded7cbde581dc821c12a2a5a2800
 
 public class BeanTestEngine implements GeminiConsoleGroovyEngine {
 	
 	private GroovyShell shell;
 
+<<<<<<< HEAD
+=======
+	public void init(){
+		engine = new GroovyScriptEngineImpl();
+		Bundle[] bundles = Activator.getDefault().getContext().getBundles();
+		GunnScriptClassLoader classLoader = new GunnScriptClassLoader(bundles);
+		((GroovyScriptEngineImpl)engine).setClassLoader(classLoader);
+	}
+>>>>>>> 24564b312d9bded7cbde581dc821c12a2a5a2800
 	
 	private GroovyShell getShell() {
 		if( shell == null ){

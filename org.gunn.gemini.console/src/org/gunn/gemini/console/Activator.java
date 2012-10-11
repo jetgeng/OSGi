@@ -7,13 +7,13 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+//import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 import org.gunn.gemini.console.test.common.BeanTestEngine;
 import org.gunn.gemini.console.test.common.ParamParaserResult;
 import org.gunn.gemini.console.test.common.TestCommandParamHandle;
-import org.osgi.framework.BundleActivator;
+//import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 
