@@ -1,5 +1,6 @@
-class
-swp
+*.class
+/bin/
+*.swp
 log
 out
 snm
