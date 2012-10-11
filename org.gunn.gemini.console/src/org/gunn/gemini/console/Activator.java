@@ -39,7 +39,6 @@ public class Activator extends AbstractBlueprintActivator  implements CommandPro
 		super.start(bundleContext);
 		
 		engine = new BeanTestEngine();
-		engine.init();
 		
 		getContext().registerService(CommandProvider.class.getName(), this, null);
 	}
@@ -76,7 +75,7 @@ public class Activator extends AbstractBlueprintActivator  implements CommandPro
 				try {
 					url = new URL(result.getScriptFileUrl());
 					File scriptFile = new File(url.toURI());
-					engine.run( scriptFile ,Main_Method_Name, getParam() );
+					engine.run( scriptFile ,Main_Method_Name, getParam() , "");
 				} catch (MalformedURLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

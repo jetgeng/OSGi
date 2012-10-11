@@ -1,0 +1,164 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Gemini控制台 &mdash; org.gunn.blog v1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <link rel="top" title="org.gunn.blog v1.0.0 documentation" href="index.html" />
+    <link rel="prev" title="Gemini起步" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="index.html" title="Gemini起步"
+             accesskey="P">上一页</a> |</li>
+        <li><a href="index.html">org.gunn.blog v1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="gemini">
+<h1>Gemini控制台<a class="headerlink" href="#gemini" title="永久链接至标题">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">作 者:</th><td class="field-body">Jet Geng</td>
+</tr>
+<tr class="field"><th class="field-name">日 期:</th><td class="field-body">2011-07-22</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id1">
+<h2>概述<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<p>在 <em>Blueprint</em> 起步中我们已经成功的通过 <em>Blueprint</em> 容器创建了一个POJO。我们只是通过log的方式查看到我们的POJO已经被创建了。无法深入的去了解容器内部Bean的运行状态和行为。
+所以才有必要创建一个Gemini控制台这样的程序。这个控制台最初的需求是：</p>
+<blockquote>
+<div><ul class="simple">
+<li>能够动态查看特定的Bean是否被创建。</li>
+<li>能够动态的获取特定的Bean。</li>
+<li>能够检查特定Bean的行为是否正确。</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="id2">
+<h2>解决方案<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<dl class="docutils">
+<dt>为了解决以上的问题。我做了一个小工具。 这个小工具的目的让客户的动态脚本能在最终的目标环境中运行。使用方式如下：</dt>
+<dd><ol class="first last arabic simple">
+<li>从 git://github.com/jetgeng/OSGi.git 下载 <strong>org.gunn.gemini.console</strong> 和 <strong>org.codehaus.groovy</strong> 这两个项目。</li>
+<li>并把这两项目加入到你的TargetPlatform中。</li>
+<li>使用 <strong>invokegv</strong> 来运行groovy脚本。<ol class="arabic">
+<li>直接在命令行输入脚本。例如： <tt class="docutils literal"><span class="pre">invokegv</span> <span class="pre">print</span> <span class="pre">act.getBean(''myPOJO'')</span></tt></li>
+<li>通过输入Groovy文件。例如： <tt class="docutils literal"><span class="pre">invokegv</span> <span class="pre">file:///Users/Puer/.../script.groovy</span></tt></li>
+</ol>
+</li>
+</ol>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">注解</p>
+<p class="last">在Groovy脚本中有一个内建的变量 <strong>act</strong> ， 他又一个叫做 <strong>getBean</strong> 的方法。通过这个方法你可以获得当前 <strong>OSGi</strong> 平台中所有的BlueprintContainer中的组件。他的输入参数时Bean或Service的id。
+如果是使用Groovy文件的形式，注意文件的url格式。他是通过如下的正则表达式 <tt class="docutils literal"><span class="pre">file:\\/{2}(\\/[:\\w\\.]+)+</span></tt> 进行验证的。并且路径中暂时不支持中文。</p>
+</div>
+<p>这个周末(23或24日)完成一个简单的录屏，来演示这个小工具的使用。</p>
+</div>
+<div class="section" id="id3">
+<h2>问题<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<p>现在这种方式不能获取到 <strong>OSGi</strong> 中的类。会报出ClassNotFound异常。
+这个是在主干支里出现的代码。如何处理。
+这个地方，我应该使用自己的 <strong>ClassLoader</strong> 来自定义Class的寻找，保证能够找到真确的类。
+.. _Emacs: <a class="reference external" href="http://www.gnu.org/software/emacs/">http://www.gnu.org/software/emacs/</a>
+.. _ScriptEngine: <a class="reference external" href="http://www.ibm.com/developerworks/cn/java/j-lo-jse6/">http://www.ibm.com/developerworks/cn/java/j-lo-jse6/</a>
+.. _Groovy: <a class="reference external" href="http://groovy.codehaus.org/">http://groovy.codehaus.org/</a>
+.. <a href="#id4"><span class="problematic" id="id5">|newjarplugin|</span></a> image:: new_plugin.png</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">內容目录</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Gemini控制台</a><ul>
+<li><a class="reference internal" href="#id1">概述</a></li>
+<li><a class="reference internal" href="#id2">解决方案</a></li>
+<li><a class="reference internal" href="#id3">问题</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="index.html"
+                        title="上一章">Gemini起步</a></p>
+  <h3>本页</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/console.txt"
+           rel="nofollow">显示源代码</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>快速搜索</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="搜索" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    输入相关的模块，术语，类或者函数名称进行搜索
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="总目录"
+             >索引</a></li>
+        <li class="right" >
+          <a href="index.html" title="Gemini起步"
+             >上一页</a> |</li>
+        <li><a href="index.html">org.gunn.blog v1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; 版权所有 2011, Jet Geng.
+      使用 <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
